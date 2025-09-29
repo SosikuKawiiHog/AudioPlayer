@@ -80,18 +80,18 @@
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
-                    <Button ImageSource="shuffle.png" BackgroundColor="Transparent" Margin="0,0,5,0"/>
-                    <Button ImageSource="prev_track.png" BackgroundColor="Transparent"/>
-                    <Button ImageSource="button_play.png" BackgroundColor="Transparent" Margin="-5,0,-5,0"/>
-                    <Button ImageSource="next_track.png" BackgroundColor="Transparent"/>
-                    <Button ImageSource="repeat.png" BackgroundColor="Transparent" Margin="5,0,0,0"/>
+                    <Button ImageSource="shuffle.png" WidthRequest="53" BackgroundColor="Transparent" Margin="0,0,5,0"/>
+                    <Button ImageSource="prev_track.png" WidthRequest="53" BackgroundColor="Transparent"/>
+                    <Button ImageSource="button_play.png" WidthRequest="80" BackgroundColor="Transparent" Margin="-5,0,-5,0"/>
+                    <Button ImageSource="next_track.png" WidthRequest="53" BackgroundColor="Transparent"/>
+                    <Button ImageSource="repeat.png" WidthRequest="53" BackgroundColor="Transparent" Margin="5,0,0,0"/>
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Center" Spacing="5">
                     <Label Text="1x" TextColor="White" VerticalOptions="Center"/>
-                    <Button ImageSource="volume_icon.png" BackgroundColor="Transparent"/>
+                    <Button ImageSource="volume_icon.png" WidthRequest="55"  BackgroundColor="Transparent"/>
                     <Slider WidthRequest="80" VerticalOptions="Center" MinimumWidthRequest="80"/>
-                    <Button ImageSource="full_screen.png" BackgroundColor="Transparent"/>
+                    <Button ImageSource="full_screen.png" WidthRequest="55" BackgroundColor="Transparent"/>
                 </HorizontalStackLayout>
             </Grid>
         </Border>
