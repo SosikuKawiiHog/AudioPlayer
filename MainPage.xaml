@@ -1,7 +1,99 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="AudioPlayer.MainPage">
+             x:Class="AudioPlayer.MainPage"
+             BackgroundColor="Black">
 
- 
+    <Grid RowDefinitions="*,Auto,Auto"
+          ColumnDefinitions="2*,*,3*,*,2*"
+          Padding="10">
+
+        <!-- Playlists -->
+        <StackLayout Grid.Row="0" Grid.Column="0" BackgroundColor="#242323" Padding="10 ">
+            <Label Text="Плейлисты" TextColor="White" FontSize="24" HorizontalOptions="Center"/>
+            <Button Text="Создать плейлист" 
+            FontSize="18"
+            FontFamily="RobotoMedium"
+            BackgroundColor="White"
+            TextColor="Black"
+            CornerRadius="15"
+            HeightRequest="50"
+            Margin="30,20,30,0"/>
+            <ScrollView>
+
+            </ScrollView>
+        </StackLayout>
+
+        <Grid Grid.Row="0" Grid.Column="2">
+            <Border MinimumWidthRequest="150"
+                MinimumHeightRequest="150"
+                MaximumWidthRequest="600"
+                MaximumHeightRequest="600"
+                StrokeThickness="0"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
+                <Image Source="swag.png"
+               Aspect="AspectFit" />
+            </Border>
+        </Grid>
+
+        <!-- Queue -->
+        <StackLayout Grid.Row="0" Grid.Column="4" BackgroundColor="#242323" Padding="10">
+            <Label Text="Очередь" TextColor="White" FontSize="24" Margin="0,0,0,10" HorizontalOptions="Center"/>
+            <ScrollView>
+
+
+            </ScrollView>
+        </StackLayout>
+
+        <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Margin="150, 15" />
+
+        <!-- PlayerBar -->
+        <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
+            BackgroundColor="#2C2D2B" 
+            Padding="12"
+            WidthRequest="800"
+            HeightRequest="100"
+            HorizontalOptions="Center" 
+            VerticalOptions="Center"
+            Stroke="Transparent">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="15" />
+            </Border.StrokeShape>
+
+            <Grid>
+                <HorizontalStackLayout HorizontalOptions="Start" VerticalOptions="Center" Spacing="10">
+                    <Border MinimumWidthRequest="50" MinimumHeightRequest="50" MaximumWidthRequest="200" MaximumHeightRequest="200"
+                    StrokeThickness="0" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="5" />
+                        </Border.StrokeShape>
+                        <Image Source="swag.png" Aspect="AspectFit" />
+                    </Border>
+                    <StackLayout VerticalOptions="Center">
+                        <Label Text="Название" TextColor="White" FontSize="16" FontFamily="RobotoMedium"/>
+                        <Label Text="Исполнитель" TextColor="White" Opacity="0.5" FontSize="14" FontFamily="RobotoMedium"/>
+                    </StackLayout>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
+                    <Button ImageSource="shuffle.png" WidthRequest="53" BackgroundColor="Transparent" Margin="0,0,5,0"/>
+                    <Button ImageSource="prev_track.png" WidthRequest="53" BackgroundColor="Transparent"/>
+                    <Button ImageSource="button_play.png" WidthRequest="80" BackgroundColor="Transparent" Margin="-5,0,-5,0"/>
+                    <Button ImageSource="next_track.png" WidthRequest="53" BackgroundColor="Transparent"/>
+                    <Button ImageSource="repeat.png" WidthRequest="53" BackgroundColor="Transparent" Margin="5,0,0,0"/>
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Center" Spacing="5">
+                    <Label Text="1x" TextColor="White" VerticalOptions="Center"/>
+                    <Button ImageSource="volume_icon.png" WidthRequest="55"  BackgroundColor="Transparent"/>
+                    <Slider WidthRequest="80" VerticalOptions="Center" MinimumWidthRequest="80"/>
+                    <Button ImageSource="full_screen.png" WidthRequest="55" BackgroundColor="Transparent"/>
+                </HorizontalStackLayout>
+            </Grid>
+        </Border>
+    </Grid>
 </ContentPage>

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>net8.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
@@ -38,6 +38,9 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+	  <CreatePackage>false</CreatePackage>
+	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
@@ -62,4 +65,26 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Resources\Images\button_play_pause.png" />
+	  <None Remove="Resources\Images\button_play.png" />
+	  <None Remove="Resources\Images\full_screen.png" />
+	  <None Remove="Resources\Images\next_track.png" />
+	  <None Remove="Resources\Images\prev_track.png" />
+	  <None Remove="Resources\Images\repeat.png" />
+	  <None Remove="Resources\Images\shuffle.png" />
+	  <None Remove="Resources\Images\volume_icon.png" />
+	  <None Remove="Resources\Images\swag.png" />
+	</ItemGroup>
+	<ItemGroup>
+	  <BundleResource Include="Resources\Images\button_play_pause.png" />
+	  <BundleResource Include="Resources\Images\button_play.png" />
+	  <BundleResource Include="Resources\Images\full_screen.png" />
+	  <BundleResource Include="Resources\Images\next_track.png" />
+	  <BundleResource Include="Resources\Images\prev_track.png" />
+	  <BundleResource Include="Resources\Images\repeat.png" />
+	  <BundleResource Include="Resources\Images\shuffle.png" />
+	  <BundleResource Include="Resources\Images\volume_icon.png" />
+	  <BundleResource Include="Resources\Images\swag.png" />
+	</ItemGroup>
 </Project>
