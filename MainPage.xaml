@@ -2,7 +2,35 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AudioPlayer.MainPage"
-             BackgroundColor="Black">
+             BackgroundColor="Black"
+             NavigationPage.HasNavigationBar="False"
+             >
+    <ContentPage.Resources>
+        <Style TargetType="Button">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="Opacity" Value="1"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="Opacity" Value="0.6"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+
+    </ContentPage.Resources>
 
     <Grid RowDefinitions="*,Auto,Auto"
           ColumnDefinitions="2*,*,3*,*,2*"
@@ -18,25 +46,27 @@
             TextColor="Black"
             CornerRadius="15"
             HeightRequest="50"
-            Margin="30,20,30,0"/>
+            Margin="30,20,30,0"
+            IsEnabled="False"/>
             <ScrollView>
 
             </ScrollView>
         </StackLayout>
 
         <Grid Grid.Row="0" Grid.Column="2">
-            <Border MinimumWidthRequest="150"
-                MinimumHeightRequest="150"
-                MaximumWidthRequest="600"
-                MaximumHeightRequest="600"
+            <Border
                 StrokeThickness="0"
                 HorizontalOptions="Center"
                 VerticalOptions="Center">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="15" />
-                </Border.StrokeShape>
-                <Image Source="swag.png"
-               Aspect="AspectFit" />
+                <Button Text="Открыть папку"
+                FontSize="18"
+                FontFamily="RobotoMedium"
+                BackgroundColor="White"
+                TextColor="Black"
+                CornerRadius="15"
+                HeightRequest="50"
+                Padding="50"
+                Clicked="OnOpenFolderClicked"/>
             </Border>
         </Grid>
 
