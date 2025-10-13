@@ -7,6 +7,7 @@
              >
     <ContentPage.Resources>
         <Style TargetType="Button">
+            <Setter Property="BorderColor" Value="Transparent"></Setter>
             <Setter Property="VisualStateManager.VisualStateGroups">
                 <VisualStateGroupList>
                     <VisualStateGroup x:Name="CommonStates">
@@ -60,12 +61,12 @@
                 VerticalOptions="Center">
                 <Button Text="Открыть папку"
                 FontSize="18"
-                FontFamily="RobotoMedium"
+                FontFamily="OpenSansRegular"
                 BackgroundColor="White"
                 TextColor="Black"
                 CornerRadius="15"
                 HeightRequest="50"
-                Padding="50"
+                Padding="50, 0"
                 Clicked="OnOpenFolderClicked"/>
             </Border>
         </Grid>
@@ -82,7 +83,7 @@
         <Slider Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Margin="150, 15" />
 
         <!-- PlayerBar -->
-        <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"
+        <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5"
             BackgroundColor="#2C2D2B" 
             Padding="12"
             WidthRequest="800"
@@ -111,7 +112,7 @@
 
                 <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
                     <Button ImageSource="shuffle.png" WidthRequest="53" BackgroundColor="Transparent" Margin="0,0,5,0"/>
-                    <Button ImageSource="prev_track.png" WidthRequest="53" BackgroundColor="Transparent"/>
+                    <Button ImageSource="prev_track.png" WidthRequest="53" BackgroundColor="Transparent" BorderColor="Transparent"/>
                     <Button ImageSource="button_play.png" WidthRequest="80" BackgroundColor="Transparent" Margin="-5,0,-5,0"/>
                     <Button ImageSource="next_track.png" WidthRequest="53" BackgroundColor="Transparent"/>
                     <Button ImageSource="repeat.png" WidthRequest="53" BackgroundColor="Transparent" Margin="5,0,0,0"/>

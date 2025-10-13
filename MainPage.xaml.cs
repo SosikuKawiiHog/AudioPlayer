@@ -12,8 +12,8 @@ public partial class MainPage : ContentPage
     private async void OnOpenFolderClicked(object sender, EventArgs e)
     {
         // тут потом открыть папку типо
-        //await Navigation.PushAsync(new PlayerPage(), animated: false);
-        Application.Current.MainPage = new PlayerPage();
+        await Navigation.PushAsync(new PlayerPage(), animated: false);
+        //Application.Current.MainPage = new PlayerPage();
 
     }
 }
