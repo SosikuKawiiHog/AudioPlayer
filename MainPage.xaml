@@ -70,7 +70,6 @@
                 Clicked="OnOpenFolderClicked"/>
             </Border>
         </Grid>
-
         <!-- Queue -->
         <StackLayout Grid.Row="0" Grid.Column="4" BackgroundColor="#242323" Padding="10">
             <Label Text="Очередь" TextColor="White" FontSize="24" Margin="0,0,0,10" HorizontalOptions="Center"/>
@@ -94,7 +93,6 @@
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="15" />
             </Border.StrokeShape>
-
             <Grid>
                 <HorizontalStackLayout HorizontalOptions="Start" VerticalOptions="Center" Spacing="10">
                     <Border MinimumWidthRequest="50" MinimumHeightRequest="50" MaximumWidthRequest="200" MaximumHeightRequest="200"
