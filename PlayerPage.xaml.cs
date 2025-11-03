@@ -6,6 +6,7 @@ public partial class PlayerPage : ContentPage
 {
     private bool isFullScreen = false;
     private bool _isExpanded = true;
+    private int _playlistCount = 1;
 
     public PlayerPage()
     {
@@ -21,26 +22,23 @@ public partial class PlayerPage : ContentPage
 
     private void OnAddMoreTracks(object sender, EventArgs e)
     {
-        // здесь снова должен открываться проводник но с настройкой на один или несколько mp3-wav-другие аудио
-        // обработка там типо в temp кинуть ну тут сами думайте
+        // здесь снова должен открываться папка, но с настройкой на один или несколько mp3/wav/другие х
+        // потому ну обработка сами короче я хззз просто куда в temp типо
     }
+
 
     // для сворачивания плейлиста
     private void OnToggleClicked(object sender, EventArgs e)
     {
         if (sender is ImageButton button && button.BindingContext is VerticalStackLayout tracksContainer)
         {
-            // Переключаем видимость
             tracksContainer.IsVisible = !tracksContainer.IsVisible;
 
-            // Меняем иконку
             button.Source = tracksContainer.IsVisible
                 ? "collapse_icon.png"
                 : "expand_icon.png";
         }
     }
-
-    private int _playlistCount = 1;
 
     private void OnCreatePlaylistClicked(object sender, EventArgs e)
     {
@@ -51,8 +49,9 @@ public partial class PlayerPage : ContentPage
         // короче здесь просто создаётся базированный не читаемый не с json но в будущем парситься с json
 
 
-        // контейнер для одного плейлиста
+        // создаём контейнер для одного плейлиста
         var playlistLayout = new VerticalStackLayout();
+
         var headerGrid = new Grid
         {
             ColumnDefinitions =
@@ -64,18 +63,17 @@ public partial class PlayerPage : ContentPage
         }
         };
 
-        // контейнер треков
         var tracksContainer = new VerticalStackLayout
         {
             Margin = new Thickness(10, 10, 0, 0),
             Spacing = 8,
-            BackgroundColor = Color.FromArgb("#2C2D2B"),
-            IsVisible = true // стартовое состояние — развёрнут
+            BackgroundColor = Color.FromArgb("#2F2F2F"),
+            IsVisible = true
         };
+
         tracksContainer.Add(CreateTrackFrame("C418 - Far"));
         tracksContainer.Add(CreateTrackFrame("music - cool"));
 
-        // кнопка сворачивания
         var collapseButtonContainer = new Grid
         {
             WidthRequest = 20,
@@ -131,13 +129,13 @@ public partial class PlayerPage : ContentPage
     {
         return new Frame
         {
-            BackgroundColor = Color.FromArgb("2C2D2B"),
-            BorderColor = Color.FromArgb("Transparent"),
-            HasShadow = false,
+            BackgroundColor = Color.FromArgb("#2F2F2F"),
             Padding = 0,
-            CornerRadius = 8,
+            CornerRadius = 10,
             Content = new HorizontalStackLayout
             {
+                Spacing = 0,
+                VerticalOptions = LayoutOptions.Center,
                 Children =
             {
                 new Button
