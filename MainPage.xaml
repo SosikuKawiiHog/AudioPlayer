@@ -70,6 +70,12 @@
                 Clicked="OnOpenFolderClicked"/>
             </Border>
         </Grid>
+
+        <Label
+                x:Name="folderPath"
+                SemanticProperties.HeadingLevel="Level1"
+                FontSize="32"
+                HorizontalOptions="Center" />
         <!-- Queue -->
         <StackLayout Grid.Row="0" Grid.Column="4" BackgroundColor="#242323" Padding="10">
             <Label Text="Очередь" TextColor="White" FontSize="24" Margin="0,0,0,10" HorizontalOptions="Center"/>
