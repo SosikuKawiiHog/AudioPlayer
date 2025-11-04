@@ -135,33 +135,84 @@ public partial class PlayerPage : ContentPage
     // для создания одного трека
     private Frame CreateTrackFrame(string trackName)
     {
+        var trackLayout = new HorizontalStackLayout
+        {
+            Spacing = 0,
+            VerticalOptions = LayoutOptions.Center,
+            Children =
+        {
+            new Button
+            {
+                ImageSource = "button_play.png",
+                WidthRequest = 50,
+                BackgroundColor = Colors.Transparent,
+                VerticalOptions = LayoutOptions.Center
+            },
+            new Label
+            {
+                Text = trackName,
+                TextColor = Colors.White,
+                FontSize = 16,
+                VerticalOptions = LayoutOptions.Center
+            }
+        }
+        };
+
+        // контекстное меню
+
+        // короче получается так,что сейчас контекстое меню формируется один раз и когда
+        // мы добавим следущие плейлисты они отображаться не будут 
+        // ну логично 0_0
+        
+
+        var menu = new MenuFlyout();
+
+        var addToPlaylist = new MenuFlyoutSubItem { Text = "Добавить в плейлист" };
+
+        if (PlaylistsContainer != null && PlaylistsContainer.Children.Count > 0)
+        {
+            foreach (var playlist in PlaylistsContainer.Children.OfType<VerticalStackLayout>())
+            {
+                var label = playlist.Children
+                    .OfType<Grid>()
+                    .FirstOrDefault()?
+                    .Children
+                    .OfType<Label>()
+                    .FirstOrDefault();
+
+                var name = label?.Text ?? "Без названия";
+
+                var item = new MenuFlyoutItem { Text = name };
+                item.Clicked += (s, e) =>
+                {
+                    Application.Current?.MainPage?.DisplayAlert("я", "все понял", "спончбоб");
+                };
+                addToPlaylist.Add(item);
+            }
+        }
+        else
+        {
+            addToPlaylist.Add(new MenuFlyoutItem { Text = "нет плейлистов" });
+        }
+
+        menu.Add(addToPlaylist);
+
+        var deleteItem = new MenuFlyoutItem { Text = "Удалить из плейлиста" };
+        deleteItem.Clicked += (s, e) =>
+        {
+            if (trackLayout.Parent is Frame frame && frame.Parent is Layout parent)
+                parent.Children.Remove(frame);
+        };
+        menu.Add(deleteItem);
+
+        FlyoutBase.SetContextFlyout(trackLayout, menu);
+
         return new Frame
         {
             BackgroundColor = Color.FromArgb("#2F2F2F"),
             Padding = 0,
             CornerRadius = 10,
-            Content = new HorizontalStackLayout
-            {
-                Spacing = 0,
-                VerticalOptions = LayoutOptions.Center,
-                Children =
-            {
-                new Button
-                {
-                    ImageSource = "button_play.png",
-                    WidthRequest = 50,
-                    BackgroundColor = Colors.Transparent,
-                    VerticalOptions = LayoutOptions.Center
-                },
-                new Label
-                {
-                    Text = trackName,
-                    TextColor = Colors.White,
-                    FontSize = 16,
-                    VerticalOptions = LayoutOptions.Center
-                }
-            }
-            }
+            Content = trackLayout
         };
     }
 }

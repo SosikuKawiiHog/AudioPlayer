@@ -40,24 +40,26 @@
                 <StackLayout Padding="10" BackgroundColor="#242323">
                     <Label Text="Плейлисты" TextColor="White" FontSize="24" HorizontalOptions="Center"/>
                     <Button Text="Создать плейлист"
-            Clicked="OnCreatePlaylistClicked"
-            BackgroundColor="White"
-            TextColor="Black"
-            CornerRadius="15"
-            HeightRequest="50"
-            Margin="30,20,30,0"/>
-                    <Button Text="Добавить еще песен"
-            Clicked="OnAddMoreTracks"
-            BackgroundColor="Black"
-            TextColor="White"
-            CornerRadius="15"
-            HeightRequest="50"
-            Margin="30,15,30,15"/>
+                        Clicked="OnCreatePlaylistClicked"
+                        BackgroundColor="White"
+                        TextColor="Black"
+                        CornerRadius="15"
+                        HeightRequest="50"
+                        Margin="30,20,30,0"/>
+                                <Button Text="Добавить еще песен"
+                        Clicked="OnAddMoreTracks"
+                        BackgroundColor="Black"
+                        TextColor="White"
+                        CornerRadius="15"
+                        HeightRequest="50"
+                        Margin="30,15,30,15"/>
+                    
                     <ScrollView VerticalOptions="FillAndExpand">
-    <VerticalStackLayout x:Name="PlaylistsContainer"
-                         Spacing="15"
-                         Padding="0,10,0,20"/>
-</ScrollView>
+                        <VerticalStackLayout x:Name="PlaylistsContainer"
+                                                 Spacing="15"
+                                                 Padding="0,10,0,20"/>
+                        
+                    </ScrollView>   
                 </StackLayout>
 
 
