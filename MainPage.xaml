@@ -34,7 +34,7 @@
     </ContentPage.Resources>
 
     <Grid RowDefinitions="*,Auto,Auto"
-          ColumnDefinitions="2*,*,3*,*,2*"
+          ColumnDefinitions="3*,*,4*,*,3*"
           Padding="10">
 
         <!-- Playlists -->

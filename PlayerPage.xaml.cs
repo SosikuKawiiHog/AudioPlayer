@@ -55,18 +55,21 @@ public partial class PlayerPage : ContentPage
         var headerGrid = new Grid
         {
             ColumnDefinitions =
-        {
-            new ColumnDefinition { Width = GridLength.Auto },
-            new ColumnDefinition { Width = GridLength.Auto },
-            new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-            new ColumnDefinition { Width = GridLength.Auto }
-        }
+            {
+                new ColumnDefinition { Width = GridLength.Auto },
+                new ColumnDefinition { Width = GridLength.Auto },
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                new ColumnDefinition { Width = GridLength.Auto }
+            },
+            Margin = new Thickness(0, 0, 0, 0), // ⬅️ Сдвигаем весь блок чуть влево
+            ColumnSpacing = 0
         };
+
 
         var tracksContainer = new VerticalStackLayout
         {
             Margin = new Thickness(10, 10, 0, 0),
-            Spacing = 8,
+            Spacing = 5,
             BackgroundColor = Color.FromArgb("#2F2F2F"),
             IsVisible = true
         };
@@ -76,17 +79,21 @@ public partial class PlayerPage : ContentPage
 
         var collapseButtonContainer = new Grid
         {
-            WidthRequest = 20,
-            HeightRequest = 20,
-            Margin = new Thickness(15, 0)
+            WidthRequest = 30,
+            HeightRequest = 30,
+            Margin = new Thickness(0, 0)
         };
 
         var toggleButton = new ImageButton
         {
             Source = "collapse_icon.png",
+            WidthRequest = 20,
+            HeightRequest = 20,
             BackgroundColor = Colors.Transparent,
             Aspect = Aspect.AspectFit,
-            BindingContext = tracksContainer // какой блок сворачивать
+            VerticalOptions = LayoutOptions.Center,
+            BindingContext = tracksContainer, // какой блок сворачивать
+            Margin = new Thickness(0, -7)
         };
         toggleButton.Clicked += OnToggleClicked;
         collapseButtonContainer.Add(toggleButton);
@@ -97,6 +104,7 @@ public partial class PlayerPage : ContentPage
             ImageSource = "button_play.png",
             WidthRequest = 50,
             BackgroundColor = Colors.Transparent
+
         };
         headerGrid.Add(playButton, 1, 0);
 
@@ -106,7 +114,7 @@ public partial class PlayerPage : ContentPage
             TextColor = Colors.White,
             FontAttributes = FontAttributes.Bold,
             FontSize = 18,
-            VerticalOptions = LayoutOptions.Center
+            VerticalOptions = LayoutOptions.Center,
         };
         headerGrid.Add(playlistLabel, 2, 0);
 

@@ -34,7 +34,7 @@
 
     <Grid>
         <Grid x:Name="NormalLayout">
-            <Grid RowDefinitions="*,Auto,Auto" ColumnDefinitions="2*,*,3*,*,2*" Padding="10">
+            <Grid RowDefinitions="*,Auto,Auto" ColumnDefinitions="3*,*,4*,*,3*" Padding="10">
 
                 <!-- Playlists -->
                 <StackLayout Padding="10" BackgroundColor="#242323">
