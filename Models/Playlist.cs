@@ -12,9 +12,9 @@ namespace AudioPlayer.Models
     public class Playlist : INotifyPropertyChanged
     {
         public string Name { get; set; }
-        
+
         //этот прикол нужен для связи с ui zov'a ИБО КАК ЯНДЕКС ВЫДАЛ, РЕАЛИЗУЕТ INotifyCollectionChanged
-        public ObservableCollection<Track> Tracks { get; set; }
+        public ObservableCollection<Track> Tracks { get; set; } = new();
         public bool IsTemporary { get; set; } = false;
         private bool _isExpanded { get; set; } = true;
         public bool IsExpanded { get => _isExpanded; 

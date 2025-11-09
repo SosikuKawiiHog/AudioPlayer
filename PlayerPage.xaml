@@ -85,11 +85,12 @@
 
                                         <!-- Список треков -->
                                         <CollectionView ItemsSource="{Binding Tracks}" 
-                                        IsVisible="{Binding IsExpanded}"
-                                        Margin="10,0,0,10">
+                                                        IsVisible="{Binding IsExpanded}"
+                                                        Margin="10,0,0,10">
                                             <CollectionView.ItemTemplate>
                                                 <DataTemplate>
-                                                    <Frame BackgroundColor="#2F2F2F" CornerRadius="10" Padding="5">
+                                                    <Frame BackgroundColor="#2F2F2F" CornerRadius="10" Padding="5"
+                                                           BindingContextChanged="OnTrackFrameLoaded">
                                                         <HorizontalStackLayout Spacing="10">
                                                             <Button ImageSource="button_play.png" WidthRequest="40" BackgroundColor="Transparent"
                                                              CommandParameter="{Binding .}" Clicked="OnTrackPlayClicked"/>
@@ -131,7 +132,15 @@
                     <CollectionView ItemsSource="{Binding Queue}" Background="Transparent">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <Label Text="{Binding Title}" TextColor="White" FontSize="14" Margin="5"></Label>
+                                <Frame BackgroundColor="#2F2F2F" CornerRadius="10" Padding="5" Margin="5">
+                                    <HorizontalStackLayout Spacing="10">
+                                        <Button ImageSource="button_play.png"
+                                                WidthRequest="40" BackgroundColor="Transparent"
+                                                CommandParameter="{Binding .}"
+                                                Clicked="OnQueueTrackPlayClicked"/>
+                                        <Label Text="{Binding Title}" TextColor="White" FontSize="14" VerticalOptions="Center"></Label>
+                                    </HorizontalStackLayout>
+                                </Frame>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
@@ -169,11 +178,11 @@
                         </HorizontalStackLayout>
 
                         <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
-                            <Button ImageSource="shuffle.png" WidthRequest="53" BackgroundColor="Transparent" Margin="0,0,5,0"/>
-                            <Button ImageSource="prev_track.png" WidthRequest="53" BackgroundColor="Transparent"/>
-                            <Button ImageSource="button_play.png" WidthRequest="80" BackgroundColor="Transparent" Margin="-5,0,-5,0"/>
-                            <Button ImageSource="next_track.png" WidthRequest="53" BackgroundColor="Transparent"/>
-                            <Button ImageSource="repeat.png" WidthRequest="53" BackgroundColor="Transparent" Margin="5,0,0,0"/>
+                            <Button ImageSource="shuffle.png" WidthRequest="53" BackgroundColor="Transparent" Margin="0,0,5,0" Clicked="OnShuffleClicked"/>
+                            <Button ImageSource="prev_track.png" WidthRequest="53" BackgroundColor="Transparent" Clicked="OnPrevTrackClicked"/>
+                            <Button ImageSource="button_play.png" WidthRequest="80" BackgroundColor="Transparent" Margin="-5,0,-5,0" Clicked="OnGlobalPlayPauseClicked"/>
+                            <Button ImageSource="next_track.png" WidthRequest="53" BackgroundColor="Transparent" Clicked="OnNextTrackClicked"/>
+                            <Button ImageSource="repeat.png" WidthRequest="53" BackgroundColor="Transparent" Margin="5,0,0,0" Clicked="OnRepeatClicked"/>
                         </HorizontalStackLayout>
 
                         <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Center" Spacing="5">
