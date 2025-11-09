@@ -1,16 +1,40 @@
-﻿using Microsoft.Maui.Controls;
+﻿using AudioPlayer.Models;
+using AudioPlayer.Services;
+using CommunityToolkit.Maui.Core.Primitives;
+using CommunityToolkit.Maui.Storage;
+using CommunityToolkit.Maui.Views;
+using Microsoft.Maui.Controls;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace AudioPlayer;
 
 public partial class PlayerPage : ContentPage
 {
+
     private bool isFullScreen = false;
-    private bool _isExpanded = true;
-    private int _playlistCount = 1;
+    private bool isUserSeeking = false;
+    //private bool _isExpanded = true;
+    //private int _playlistCount = 1;
 
     public PlayerPage()
     {
         InitializeComponent();
+        BindingContext = AudioManager.Instance;
+        positionSlider.DragCompleted += (s, e) =>
+        {
+            if (mediaElement.Duration > TimeSpan.Zero && isUserSeeking)
+            {
+                var newPos = TimeSpan.FromSeconds(positionSlider.Value);
+                mediaElement.SeekTo(newPos);
+            }
+            isUserSeeking = false;
+        };
+        positionSlider.DragStarted += (s, e) =>
+        {
+            isUserSeeking = true;
+        };
+        mediaElement.MediaEnded += OnMediaEnded;
     }
 
     private void OnFullScreenClicked(object sender, EventArgs e)
@@ -20,199 +44,164 @@ public partial class PlayerPage : ContentPage
         FullScreenLayout.IsVisible = isFullScreen;
     }
 
-    private void OnAddMoreTracks(object sender, EventArgs e)
+    private void OnPlaylistPlayClicked(object sender, EventArgs e)
+    {
+        if (sender is Button btn && btn.CommandParameter is Playlist playlist)
+        {
+            var queue = AudioManager.Instance.Queue;
+            queue.Clear();
+            foreach(var track in playlist.Tracks)
+            {
+                queue.Add(track);
+            }
+
+            if(queue.Count > 0)
+            {
+                var first = queue[0];
+                PlayTrack(first);
+            }
+        }
+    }
+    private async void OnAddMoreTracks(object sender, EventArgs e)
     {
         // здесь снова должен открываться папка, но с настройкой на один или несколько mp3/wav/другие х
         // потому ну обработка сами короче я хззз просто куда в temp типо
-    }
 
-
-    // для сворачивания плейлиста
-    private void OnToggleClicked(object sender, EventArgs e)
-    {
-        if (sender is ImageButton button && button.BindingContext is VerticalStackLayout tracksContainer)
+        try
         {
-            tracksContainer.IsVisible = !tracksContainer.IsVisible;
+            var folderPicker = FolderPicker.Default;
+            var result = await folderPicker.PickAsync(CancellationToken.None);
 
-            button.Source = tracksContainer.IsVisible
-                ? "collapse_icon.png"
-                : "expand_icon.png";
+            if (result.IsSuccessful && result.Folder != null)
+            {
+                var allowedExtensions = new[] { ".mp3", ".wav", ".ogg", ".flac" };
+
+                var files = Directory.GetFiles(result.Folder.Path).Where(f => allowedExtensions.Contains(Path.GetExtension(f).ToLowerInvariant())).ToArray();
+
+                if (files.Length == 0)
+                {
+                    await DisplayAlert("Ошибка!", "В выбранной папке нет аудиофайлов.", "блин");
+                    return;
+                }
+
+                var temp = AudioManager.Instance.TempPlaylist;
+                if (temp == null)
+                {
+                    AudioManager.Instance.LoadTracksFromPaths(files);
+                }
+                else
+                {
+                    foreach (var file in files)
+                    {
+                        var filename = Path.GetFileNameWithoutExtension(file);
+                        temp.Tracks.Add(new Track
+                        {
+                            Path = file,
+                            Title = filename,
+                            Artist = "Unknown"
+                        });
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Ошибка!", ex.Message, "блин");
         }
     }
+
 
     private void OnCreatePlaylistClicked(object sender, EventArgs e)
     {
-        // должен создаться плейлист - json файл структуры которой нету
-        // в структуре того что должно отобразиться указываеться количество песен
-        // ну короче да сделаете
-
-        // короче здесь просто создаётся базированный не читаемый не с json но в будущем парситься с json
-
-
-        // создаём контейнер для одного плейлиста
-        var playlistLayout = new VerticalStackLayout();
-
-        var headerGrid = new Grid
+        var newPlaylist = new Playlist
         {
-            ColumnDefinitions =
-            {
-                new ColumnDefinition { Width = GridLength.Auto },
-                new ColumnDefinition { Width = GridLength.Auto },
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                new ColumnDefinition { Width = GridLength.Auto }
-            },
-            Margin = new Thickness(0, 0, 0, 0), // ⬅️ Сдвигаем весь блок чуть влево
-            ColumnSpacing = 0
+            Name = $"Плейлист {AudioManager.Instance.Playlists.Count + 1}",
+            IsExpanded = true
         };
 
-
-        var tracksContainer = new VerticalStackLayout
-        {
-            Margin = new Thickness(10, 10, 0, 0),
-            Spacing = 5,
-            BackgroundColor = Color.FromArgb("#2F2F2F"),
-            IsVisible = true
-        };
-
-        tracksContainer.Add(CreateTrackFrame("C418 - Far"));
-        tracksContainer.Add(CreateTrackFrame("music - cool"));
-
-        var collapseButtonContainer = new Grid
-        {
-            WidthRequest = 30,
-            HeightRequest = 30,
-            Margin = new Thickness(0, 0)
-        };
-
-        var toggleButton = new ImageButton
-        {
-            Source = "collapse_icon.png",
-            WidthRequest = 20,
-            HeightRequest = 20,
-            BackgroundColor = Colors.Transparent,
-            Aspect = Aspect.AspectFit,
-            VerticalOptions = LayoutOptions.Center,
-            BindingContext = tracksContainer, // какой блок сворачивать
-            Margin = new Thickness(0, -7)
-        };
-        toggleButton.Clicked += OnToggleClicked;
-        collapseButtonContainer.Add(toggleButton);
-        headerGrid.Add(collapseButtonContainer, 0, 0);
-
-        var playButton = new Button
-        {
-            ImageSource = "button_play.png",
-            WidthRequest = 50,
-            BackgroundColor = Colors.Transparent
-
-        };
-        headerGrid.Add(playButton, 1, 0);
-
-        var playlistLabel = new Label
-        {
-            Text = $"Плейлист {_playlistCount++}",
-            TextColor = Colors.White,
-            FontAttributes = FontAttributes.Bold,
-            FontSize = 18,
-            VerticalOptions = LayoutOptions.Center,
-        };
-        headerGrid.Add(playlistLabel, 2, 0);
-
-        var tracksCountLabel = new Label
-        {
-            Text = "5 треков",
-            TextColor = Color.FromArgb("#A8A8A8"),
-            VerticalOptions = LayoutOptions.Center
-        };
-        headerGrid.Add(tracksCountLabel, 3, 0);
-
-        playlistLayout.Add(headerGrid);
-        playlistLayout.Add(tracksContainer);
-
-        PlaylistsContainer.Add(playlistLayout);
+        AudioManager.Instance.Playlists.Add(newPlaylist);
     }
 
-    // для создания одного трека
-    private Frame CreateTrackFrame(string trackName)
+    private void OnTogglePlaylistClicked(object sender, EventArgs e)
     {
-        var trackLayout = new HorizontalStackLayout
+        if (sender is Button btn && btn.CommandParameter is Playlist playlist)
         {
-            Spacing = 0,
-            VerticalOptions = LayoutOptions.Center,
-            Children =
-        {
-            new Button
-            {
-                ImageSource = "button_play.png",
-                WidthRequest = 50,
-                BackgroundColor = Colors.Transparent,
-                VerticalOptions = LayoutOptions.Center
-            },
-            new Label
-            {
-                Text = trackName,
-                TextColor = Colors.White,
-                FontSize = 16,
-                VerticalOptions = LayoutOptions.Center
-            }
+            playlist.IsExpanded = !playlist.IsExpanded;
         }
-        };
+    }
 
-        // контекстное меню
-
-        // короче получается так,что сейчас контекстое меню формируется один раз и когда
-        // мы добавим следущие плейлисты они отображаться не будут 
-        // ну логично 0_0
-        
-
-        var menu = new MenuFlyout();
-
-        var addToPlaylist = new MenuFlyoutSubItem { Text = "Добавить в плейлист" };
-
-        if (PlaylistsContainer != null && PlaylistsContainer.Children.Count > 0)
+    private void OnTrackPlayClicked(object sender, EventArgs e)
+    {
+        if (sender is Button btn && btn.CommandParameter is Track track)
         {
-            foreach (var playlist in PlaylistsContainer.Children.OfType<VerticalStackLayout>())
+            var manager = AudioManager.Instance;
+            Playlist? parentPlaylist = null;
+            foreach(var pl in manager.Playlists)
             {
-                var label = playlist.Children
-                    .OfType<Grid>()
-                    .FirstOrDefault()?
-                    .Children
-                    .OfType<Label>()
-                    .FirstOrDefault();
-
-                var name = label?.Text ?? "Без названия";
-
-                var item = new MenuFlyoutItem { Text = name };
-                item.Clicked += (s, e) =>
+                if (pl.Tracks.Contains(track))
                 {
-                    Application.Current?.MainPage?.DisplayAlert("я", "все понял", "спончбоб");
-                };
-                addToPlaylist.Add(item);
+                    parentPlaylist = pl;
+                    break;
+                }
+            }
+            if (parentPlaylist != null)
+            {
+                var index = parentPlaylist.Tracks.IndexOf(track);
+                var tracksToPlay = parentPlaylist.Tracks.Skip(index).ToList();
+
+                manager.Queue.Clear();
+                foreach(var t in tracksToPlay)
+                {
+                    manager.Queue.Add(t);
+                }
+            }
+
+            PlayTrack(track);
+        }
+    }
+
+    private async void PlayTrack(Track track)
+    {
+        //System.Diagnostics.Debug.WriteLine($" SAERMOU{mediaElement.CurrentState}");
+        //if (mediaElement.CurrentState != MediaElementState.Stopped)
+        //{
+        //    mediaElement.Stop();
+        //    mediaElement.Source = null;
+        //    await Task.Delay(50);
+        //}
+        //System.Diagnostics.Debug.WriteLine($"saermotest2 {mediaElement.Source}");
+        mediaElement.Stop();
+        mediaElement.Source = null;
+        AudioManager.Instance.CurrentTrack = track;
+        AudioManager.Instance.IsPlaying = true;
+        mediaElement.Source = MediaSource.FromFile(track.Path);
+        await Task.Delay(100);
+        mediaElement.Play();
+    }
+
+    private async void OnMediaEnded(object sender, EventArgs e)
+    {
+        var queue = AudioManager.Instance.Queue;
+        var current = AudioManager.Instance.CurrentTrack;
+
+        if(current != null && queue.Contains(current))
+        {
+            var index = queue.IndexOf(current);
+            Track? next = null;
+
+            if(index + 1 < queue.Count)
+            {
+                next = queue[index + 1];
+            }
+            else
+            {
+                next = queue.Count > 0 ? queue[0] : null;
+            }
+            if(next != null)
+            {
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                { PlayTrack(next!); });
             }
         }
-        else
-        {
-            addToPlaylist.Add(new MenuFlyoutItem { Text = "нет плейлистов" });
-        }
-
-        menu.Add(addToPlaylist);
-
-        var deleteItem = new MenuFlyoutItem { Text = "Удалить из плейлиста" };
-        deleteItem.Clicked += (s, e) =>
-        {
-            if (trackLayout.Parent is Frame frame && frame.Parent is Layout parent)
-                parent.Children.Remove(frame);
-        };
-        menu.Add(deleteItem);
-
-        FlyoutBase.SetContextFlyout(trackLayout, menu);
-
-        return new Frame
-        {
-            BackgroundColor = Color.FromArgb("#2F2F2F"),
-            Padding = 0,
-            CornerRadius = 10,
-            Content = trackLayout
-        };
     }
 }
