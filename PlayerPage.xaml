@@ -73,12 +73,12 @@
                                              CommandParameter="{Binding .}"
                                              Clicked="OnTogglePlaylistClicked"/>
 
-                                            <Label Grid.Column="1" Text="{Binding Name}" TextColor="White"/>
-                                            
-                                            <Button Grid.Column="2" ImageSource="button_play.png" WidthRequest="44"
-                                                         BackgroundColor="Transparent" CommandParameter="{Binding .}"
-                                                         Clicked="OnPlaylistPlayClicked" Margin="0,0,-100,0"/>
-
+                                            <Button Grid.Column="1" ImageSource="button_play.png" WidthRequest="44" HeightRequest="44"
+                                                 BackgroundColor="Transparent" CommandParameter="{Binding .}"
+                                                 Clicked="OnPlaylistPlayClicked" Margin="-15,0,0,0"/>   
+                                      
+                                            <Label Grid.Column="2" Text="{Binding Name}" TextColor="White" VerticalOptions="Center"/>
+                                                                                      
                                             <Label Grid.Column="3" Text="{Binding Tracks.Count, StringFormat='{0} треков'}"
                                TextColor="#A8A8A8" VerticalOptions="Center"/>
                                         </Grid>
