@@ -179,8 +179,8 @@
 
                         <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="0">
                             <Button ImageSource="shuffle.png" WidthRequest="53" BackgroundColor="Transparent" Margin="0,0,5,0" Clicked="OnShuffleClicked"/>
-                            <Button ImageSource="prev_track.png" WidthRequest="53" BackgroundColor="Transparent" Clicked="OnPrevTrackClicked"/>
-                            <Button ImageSource="button_play.png" WidthRequest="80" BackgroundColor="Transparent" Margin="-5,0,-5,0" Clicked="OnGlobalPlayPauseClicked"/>
+                            <Button ImageSource="prev_track.png" WidthRequest="53"  BackgroundColor="Transparent" Clicked="OnPrevTrackClicked"/>
+                            <Button x:Name="PlayerBarPlayButton" ImageSource="button_play.png" WidthRequest="80" BackgroundColor="Transparent" Margin="-5,0,-5,0" Clicked="OnGlobalPlayPauseClicked"/>
                             <Button ImageSource="next_track.png" WidthRequest="53" BackgroundColor="Transparent" Clicked="OnNextTrackClicked"/>
                             <Button ImageSource="repeat.png" WidthRequest="53" BackgroundColor="Transparent" Margin="5,0,0,0" Clicked="OnRepeatClicked"/>
                         </HorizontalStackLayout>

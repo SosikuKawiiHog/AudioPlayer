@@ -157,6 +157,11 @@ public partial class PlayerPage : ContentPage
         if (sender is Button btn && btn.CommandParameter is Playlist playlist)
         {
             playlist.IsExpanded = !playlist.IsExpanded;
+        
+        // меняем иконку
+        btn.ImageSource = playlist.IsExpanded
+            ? "collapse_icon.png"
+            : "expand_icon.png";
         }
     }
 
@@ -232,6 +237,7 @@ public partial class PlayerPage : ContentPage
         mediaElement.Source = MediaSource.FromFile(track.Path);
         await Task.Delay(100);
         mediaElement.Play();
+        PlayerBarPlayButton.ImageSource = "button_play_pause.png";
     }
 
     //если трек кончился
@@ -316,27 +322,35 @@ public partial class PlayerPage : ContentPage
 
     private void OnRepeatClicked(object sender, EventArgs e)
     {
-        isRepeatEnabled = !isRepeatEnabled;
-        //изменения кнопок надо ещё сделать дааа
+        if (sender is Button btn)
+        {
+            isRepeatEnabled = !isRepeatEnabled;
+            btn.ImageSource = isRepeatEnabled ? "repeat_on.png" : "repeat.png";
+        }
     }
+
 
     private void OnShuffleClicked(object sender, EventArgs e)
     {
-        isShuffleEnabled = !isShuffleEnabled;
-        if(isShuffleEnabled && AudioManager.Instance.Queue.Count > 1)
+        if (sender is Button btn)
         {
-            var queue = AudioManager.Instance.Queue.ToList();
-            var current = AudioManager.Instance.CurrentTrack;
+            isShuffleEnabled = !isShuffleEnabled;
+            btn.ImageSource = isShuffleEnabled ? "shuffle_on.png": "shuffle.png";
+            if (isShuffleEnabled && AudioManager.Instance.Queue.Count > 1)
+            {
+                var queue = AudioManager.Instance.Queue.ToList();
+                var current = AudioManager.Instance.CurrentTrack;
 
-            queue.RemoveAll(t => t.Path == current?.Path);
+                queue.RemoveAll(t => t.Path == current?.Path);
 
-            //ya skuchayu po plusam... :(
-            var shuffled = queue.OrderBy(x => random.Next()).ToList();
+                //ya skuchayu po plusam... :(
+                var shuffled = queue.OrderBy(x => random.Next()).ToList();
 
-            if(current != null) shuffled.Insert(0, current);
+                if (current != null) shuffled.Insert(0, current);
 
-            AudioManager.Instance.Queue.Clear();
-            foreach (var track in shuffled) AudioManager.Instance.Queue.Add(track);
+                AudioManager.Instance.Queue.Clear();
+                foreach (var track in shuffled) AudioManager.Instance.Queue.Add(track);
+            }
         }
     }
 
@@ -392,15 +406,20 @@ public partial class PlayerPage : ContentPage
 
     private void OnGlobalPlayPauseClicked(object sender, EventArgs e)
     {
-        if (AudioManager.Instance.IsPlaying)
+        if (sender is Button btn)
         {
-            mediaElement.Pause();
-            AudioManager.Instance.IsPlaying = false;
-        }
-        else if (AudioManager.Instance.CurrentTrack != null)
-        {
-            mediaElement.Play();
-            AudioManager.Instance.IsPlaying = true;
+            if (AudioManager.Instance.IsPlaying)
+            {
+                mediaElement.Pause();
+                AudioManager.Instance.IsPlaying = false;
+                PlayerBarPlayButton.ImageSource = "button_play.png";
+            }
+            else if (AudioManager.Instance.CurrentTrack != null)
+            {
+                mediaElement.Play();
+                AudioManager.Instance.IsPlaying = true;
+                PlayerBarPlayButton.ImageSource = "button_play_pause.png";
+            }
         }
     }
 }
