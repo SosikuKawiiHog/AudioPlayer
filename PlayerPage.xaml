@@ -172,8 +172,10 @@
                                 <Image Source="swag.png" Aspect="AspectFit" />
                             </Border>
                             <StackLayout VerticalOptions="Center">
-                                <Label Text="{Binding CurrentTrack.Title, FallbackValue='Название'}" TextColor="White" FontSize="16" FontFamily="RobotoMedium"/>
-                                <Label Text="{Binding CurrentTrack.Artist, FallbackValue='Исполнитель'}" TextColor="White" Opacity="0.5" FontSize="14" FontFamily="RobotoMedium"/>
+                                <Label Text="{Binding CurrentTrack.Title, FallbackValue='Название'}" TextColor="White" FontSize="16" 
+                                       FontFamily="RobotoMedium" LineBreakMode="TailTruncation" MaxLines="2" WidthRequest="162"/>
+                                <Label Text="{Binding CurrentTrack.Artist, FallbackValue='Исполнитель'}" TextColor="White" Opacity="0.5" FontSize="14" 
+                                        FontFamily="RobotoMedium" LineBreakMode="TailTruncation" MaxLines="1"  WidthRequest="162"/>
                             </StackLayout>
                         </HorizontalStackLayout>
 
