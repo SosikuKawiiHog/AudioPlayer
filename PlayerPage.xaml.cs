@@ -46,13 +46,6 @@ public partial class PlayerPage : ContentPage
         AudioManager.Instance.Playlists.CollectionChanged += OnTrackFrameLoaded;
     }
 
-    //возможно удалим
-    private void OnFullScreenClicked(object sender, EventArgs e)
-    {
-        isFullScreen = !isFullScreen;
-        NormalLayout.IsVisible = !isFullScreen;
-        FullScreenLayout.IsVisible = isFullScreen;
-    }
 
     //включить плейлист
     private void OnPlaylistPlayClicked(object sender, EventArgs e)

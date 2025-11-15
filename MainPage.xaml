@@ -123,10 +123,8 @@
                 </HorizontalStackLayout>
 
                 <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Center" Spacing="5">
-                    <Label Text="1x" TextColor="White" VerticalOptions="Center"/>
                     <Button ImageSource="volume_icon.png" WidthRequest="55"  BackgroundColor="Transparent"/>
                     <Slider WidthRequest="80" VerticalOptions="Center" MinimumWidthRequest="80"/>
-                    <Button ImageSource="full_screen.png" WidthRequest="55" BackgroundColor="Transparent"/>
                 </HorizontalStackLayout>
             </Grid>
         </Border>
