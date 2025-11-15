@@ -187,9 +187,8 @@
                             <Button ImageSource="repeat.png" WidthRequest="53" BackgroundColor="Transparent" Margin="5,0,0,0" Clicked="OnRepeatClicked"/>
                         </HorizontalStackLayout>
 
-                        <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Center" Spacing="5">
-                            <Label Text="1x" TextColor="White" VerticalOptions="Center"/>
-                            <Button ImageSource="volume_icon.png" WidthRequest="55"  BackgroundColor="Transparent"/>
+                        <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Center" Spacing="10">
+                            <Image Source="volume_icon.png" WidthRequest="30"  BackgroundColor="Transparent"/>
                             <Slider x:Name="volumeSlider" Value="{Binding Source={x:Reference mediaElement}, Path=Volume, Mode=TwoWay}" WidthRequest="80" VerticalOptions="Center" MinimumWidthRequest="80"/>
                         </HorizontalStackLayout>
                     </Grid>

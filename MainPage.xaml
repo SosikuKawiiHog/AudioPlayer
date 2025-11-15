@@ -122,8 +122,8 @@
                     <Button ImageSource="repeat.png" WidthRequest="53" BackgroundColor="Transparent" Margin="5,0,0,0"/>
                 </HorizontalStackLayout>
 
-                <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Center" Spacing="5">
-                    <Button ImageSource="volume_icon.png" WidthRequest="55"  BackgroundColor="Transparent"/>
+                <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Center" Spacing="10">
+                    <Image Source="volume_icon.png" WidthRequest="30"  BackgroundColor="Transparent"/>
                     <Slider WidthRequest="80" VerticalOptions="Center" MinimumWidthRequest="80"/>
                 </HorizontalStackLayout>
             </Grid>
