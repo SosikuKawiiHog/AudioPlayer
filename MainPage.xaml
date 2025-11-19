@@ -101,7 +101,7 @@
             </Border.StrokeShape>
             <Grid>
                 <HorizontalStackLayout HorizontalOptions="Start" VerticalOptions="Center" Spacing="10">
-                    <Border MinimumWidthRequest="50" MinimumHeightRequest="50" MaximumWidthRequest="200" MaximumHeightRequest="200"
+                    <Border WidthRequest="70" HeightRequest="70"
                     StrokeThickness="0" HorizontalOptions="Center" VerticalOptions="Center">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="5" />
@@ -122,11 +122,9 @@
                     <Button ImageSource="repeat.png" WidthRequest="53" BackgroundColor="Transparent" Margin="5,0,0,0"/>
                 </HorizontalStackLayout>
 
-                <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Center" Spacing="5">
-                    <Label Text="1x" TextColor="White" VerticalOptions="Center"/>
-                    <Button ImageSource="volume_icon.png" WidthRequest="55"  BackgroundColor="Transparent"/>
+                <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Center" Spacing="10">
+                    <Image Source="volume_icon.png" WidthRequest="30"  BackgroundColor="Transparent"/>
                     <Slider WidthRequest="80" VerticalOptions="Center" MinimumWidthRequest="80"/>
-                    <Button ImageSource="full_screen.png" WidthRequest="55" BackgroundColor="Transparent"/>
                 </HorizontalStackLayout>
             </Grid>
         </Border>
