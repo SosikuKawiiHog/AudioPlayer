@@ -13,6 +13,7 @@ using TagLib;
 using Windows.Devices.Radios;
 using static System.Net.Mime.MediaTypeNames;
 using Application = Microsoft.Maui.Controls.Application;
+using File = System.IO.File;
 namespace AudioPlayer;
 
 public partial class PlayerPage : ContentPage
@@ -258,9 +259,7 @@ public partial class PlayerPage : ContentPage
         //    await Task.Delay(50);
         //}
         //System.Diagnostics.Debug.WriteLine($"saermotest2 {mediaElement.Source}");
-        if (!File.Exists(track.Path){
-
-        }
+        
         mediaElement.Stop();
         mediaElement.Source = null;
         AudioManager.Instance.CurrentTrack = track;
@@ -269,6 +268,7 @@ public partial class PlayerPage : ContentPage
         await Task.Delay(100);
         mediaElement.Play();
         PlayerBarPlayButton.ImageSource = "button_play_pause.png";
+     
     }
 
     //если трек кончился

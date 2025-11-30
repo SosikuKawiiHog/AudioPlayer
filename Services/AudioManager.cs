@@ -7,13 +7,79 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using TagLib;
+using File = System.IO.File;
 
 //misha SINGLETOOOON
 
 namespace AudioPlayer.Services
 {
+    public interface IDataService
+    {
+        Task SavePlaylistsAsync(IEnumerable<Playlist> playlists);
+        Task<List<Playlist>> LoadPlaylistsAsync();
+    }
+
+    public class FileDataService : IDataService
+    {
+        private readonly string _filePath;
+
+        public FileDataService()
+        {
+            _filePath = Path.Combine(FileSystem.AppDataDirectory, "playlists.json");
+        }
+
+        public async Task SavePlaylistsAsync(IEnumerable<Playlist> playlists)
+        {
+            try
+            {
+                // Исключаем временные плейлисты из сохранения
+                var permanentPlaylists = playlists.Where(p => !p.IsTemporary).ToList();
+
+                var options = new JsonSerializerOptions
+                {
+                    WriteIndented = true,
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                };
+
+                var json = JsonSerializer.Serialize(permanentPlaylists, options);
+                await File.WriteAllTextAsync(_filePath, json);
+            }
+            catch (Exception ex)
+            {
+                // Логируем ошибку, но не падаем
+                System.Diagnostics.Debug.WriteLine($"Ошибка сохранения: {ex.Message}");
+            }
+        }
+
+        public async Task<List<Playlist>> LoadPlaylistsAsync()
+        {
+            try
+            {
+                if (!File.Exists(_filePath))
+                    return new List<Playlist>();
+
+                var json = await File.ReadAllTextAsync(_filePath);
+                var playlists = JsonSerializer.Deserialize<List<Playlist>>(json) ?? new List<Playlist>();
+
+                // Восстанавливаем ObservableCollection для каждого плейлиста
+                foreach (var playlist in playlists)
+                {
+                    if (playlist.Tracks == null)
+                        playlist.Tracks = new ObservableCollection<Track>();
+                }
+
+                return playlists;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Ошибка загрузки: {ex.Message}");
+                return new List<Playlist>();
+            }
+        }
+    }
     public class AudioManager : INotifyPropertyChanged
     {
         private static AudioManager? _instance;
