@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 namespace AudioPlayer.Models
 {
@@ -23,9 +24,12 @@ namespace AudioPlayer.Models
         }
 
         //этот прикол нужен для связи с ui zov'a ИБО КАК ЯНДЕКС ВЫДАЛ, РЕАЛИЗУЕТ INotifyCollectionChanged
+       
         public ObservableCollection<Track> Tracks { get; set; } = new();
+
         public bool IsTemporary { get; set; } = false;
         private bool _isExpanded { get; set; } = true;
+        [JsonIgnore]
         public bool IsExpanded { get => _isExpanded; 
             set
             {

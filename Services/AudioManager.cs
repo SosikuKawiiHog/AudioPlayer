@@ -26,7 +26,7 @@ namespace AudioPlayer.Services
     {
         private readonly string _filePath;
 
-        public FileDataService()
+        public FileDataService() 
         {
             _filePath = Path.Combine(FileSystem.AppDataDirectory, "playlists.json");
         }
@@ -49,7 +49,6 @@ namespace AudioPlayer.Services
             }
             catch (Exception ex)
             {
-                // Логируем ошибку, но не падаем
                 System.Diagnostics.Debug.WriteLine($"Ошибка сохранения: {ex.Message}");
             }
         }
@@ -59,16 +58,34 @@ namespace AudioPlayer.Services
             try
             {
                 if (!File.Exists(_filePath))
+                {
+                    System.Diagnostics.Debug.WriteLine("Файл плейлистов не найден");
                     return new List<Playlist>();
+                }
 
                 var json = await File.ReadAllTextAsync(_filePath);
-                var playlists = JsonSerializer.Deserialize<List<Playlist>>(json) ?? new List<Playlist>();
+                System.Diagnostics.Debug.WriteLine($"SAERM: {json}");
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    WriteIndented = true
+                };
+
+                var playlists = JsonSerializer.Deserialize<List<Playlist>>(json, options) ?? new List<Playlist>();
+
+                System.Diagnostics.Debug.WriteLine($"SAERMO загружено: {playlists.Count}");
 
                 // Восстанавливаем ObservableCollection для каждого плейлиста
                 foreach (var playlist in playlists)
                 {
-                    if (playlist.Tracks == null)
-                        playlist.Tracks = new ObservableCollection<Track>();
+                    System.Diagnostics.Debug.WriteLine($"SAERMO Плейлист: '{playlist.Name}', Треков: {playlist.Tracks?.Count ?? 0}, IsTemporary: {playlist.IsTemporary}");
+
+                    // Убеждаемся, что коллекция инициализирована
+                    playlist.Tracks ??= new ObservableCollection<Track>();
+
+                    // Восстанавливаем состояние IsExpanded (по умолчанию true)
+                    playlist.IsExpanded = false;
                 }
 
                 return playlists;
@@ -83,6 +100,7 @@ namespace AudioPlayer.Services
     public class AudioManager : INotifyPropertyChanged
     {
         private static AudioManager? _instance;
+        private readonly IDataService _dataService;
         public static AudioManager Instance => _instance ??= new AudioManager();
 
         public ObservableCollection<Playlist> Playlists { get; } = new();
@@ -112,6 +130,80 @@ namespace AudioPlayer.Services
 
         public bool IsPlaying { get; set; }
 
+        private async void LoadPlaylistsOnStartup()
+        {
+            var savedPlaylists = await _dataService.LoadPlaylistsAsync();
+
+            
+            foreach (var playlist in savedPlaylists)
+            {
+                Playlists.Add(playlist);
+
+                // Подписываемся на изменения каждого плейлиста
+                playlist.PropertyChanged += OnPlaylistPropertyChanged;
+                if (playlist.Tracks != null)
+                {
+                    playlist.Tracks.CollectionChanged += OnTracksCollectionChanged;
+                }
+            }
+        }
+
+        private async void OnPlaylistsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            await SavePlaylistsAsync();
+
+            // Подписываемся на новые плейлисты
+            if (e.NewItems != null)
+            {
+                foreach (Playlist playlist in e.NewItems)
+                {
+                    playlist.PropertyChanged += OnPlaylistPropertyChanged;
+                    if (playlist.Tracks != null)
+                    {
+                        playlist.Tracks.CollectionChanged += OnTracksCollectionChanged;
+                    }
+                }
+            }
+
+            // Отписываемся от удаленных плейлистов
+            if (e.OldItems != null)
+            {
+                foreach (Playlist playlist in e.OldItems)
+                {
+                    playlist.PropertyChanged -= OnPlaylistPropertyChanged;
+                    if (playlist.Tracks != null)
+                    {
+                        playlist.Tracks.CollectionChanged -= OnTracksCollectionChanged;
+                    }
+                }
+            }
+        }
+
+        private async void OnPlaylistPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // Сохраняем при изменении любого свойства плейлиста
+            if (e.PropertyName == nameof(Playlist.Name))
+            {
+                await SavePlaylistsAsync();
+            }
+        }
+
+        private async void OnTracksCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            // Сохраняем при изменении треков в плейлисте
+            await SavePlaylistsAsync();
+        }
+
+        private async Task SavePlaylistsAsync()
+        {
+            await _dataService.SavePlaylistsAsync(Playlists);
+        }
+        private AudioManager()
+        {
+            _dataService = new FileDataService();
+            Playlists.CollectionChanged += OnPlaylistsChanged;
+            LoadPlaylistsOnStartup();
+        }
         public void LoadTracksFromPaths(IEnumerable<string> paths)
         {
             var tracks = new ObservableCollection<Track>();

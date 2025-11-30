@@ -19,7 +19,6 @@ namespace AudioPlayer;
 public partial class PlayerPage : ContentPage
 {
 
-    //private bool isFullScreen = false;
     private bool isUserSeeking = false;
     private bool isRepeatEnabled = false;
     private bool isShuffleEnabled = false;

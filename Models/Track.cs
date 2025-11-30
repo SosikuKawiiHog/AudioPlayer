@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace AudioPlayer.Models
@@ -13,6 +14,7 @@ namespace AudioPlayer.Models
         public string Artist { get; set; }
 
         //реализовать чтение обложки или её генерацию по метаданным эээээээ типа
+        [JsonIgnore]
         public byte[]? CoverData { get; set; }
     }
 }

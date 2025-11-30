@@ -1,12 +1,20 @@
-﻿namespace AudioPlayer
+﻿
+
+namespace AudioPlayer
 {
     public partial class App : Application
     {
         public App()
         {
             InitializeComponent();
-
-            MainPage = new NavigationPage(new MainPage());
+            if(!File.Exists(Path.Combine(FileSystem.AppDataDirectory, "playlists.json")))
+            {
+                MainPage = new NavigationPage(new MainPage());
+            }
+            else
+            {
+                MainPage = new NavigationPage(new PlayerPage());
+            }
         }
 
         protected override Window CreateWindow(IActivationState activationState)
