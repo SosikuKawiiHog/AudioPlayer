@@ -11,7 +11,16 @@ namespace AudioPlayer.Models
 {
     public class Playlist : INotifyPropertyChanged
     {
-        public string Name { get; set; }
+        
+        private string name = "";
+        public string Name { 
+            get => name;
+            set 
+            {  
+                name = value;
+                OnPropertyChanged(nameof(Name));
+            }
+        }
 
         //этот прикол нужен для связи с ui zov'a ИБО КАК ЯНДЕКС ВЫДАЛ, РЕАЛИЗУЕТ INotifyCollectionChanged
         public ObservableCollection<Track> Tracks { get; set; } = new();

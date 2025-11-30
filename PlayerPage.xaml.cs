@@ -4,16 +4,21 @@ using CommunityToolkit.Maui.Core.Primitives;
 using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls;
+using System.Collections.Specialized;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using TagLib;
+using Windows.Devices.Radios;
 using static System.Net.Mime.MediaTypeNames;
-
+using Application = Microsoft.Maui.Controls.Application;
 namespace AudioPlayer;
 
 public partial class PlayerPage : ContentPage
 {
 
-    private bool isFullScreen = false;
+    //private bool isFullScreen = false;
     private bool isUserSeeking = false;
     private bool isRepeatEnabled = false;
     private bool isShuffleEnabled = false;
@@ -44,6 +49,7 @@ public partial class PlayerPage : ContentPage
 
         mediaElement.MediaEnded += OnMediaEnded;
         AudioManager.Instance.Playlists.CollectionChanged += OnTrackFrameLoaded;
+        AudioManager.Instance.Playlists.CollectionChanged += OnPlaylistFrameLoaded;
     }
 
 
@@ -112,11 +118,40 @@ public partial class PlayerPage : ContentPage
                     foreach (var file in files)
                     {
                         var filename = Path.GetFileNameWithoutExtension(file);
+                        byte[]? coverDataTemp = null;
+                        string artist = "Unknown";
+                        string name = filename;
+                        try
+                        {
+                            using (var tagFile = TagLib.File.Create(file))
+                            {
+                                var pictures = tagFile.Tag.Pictures;
+                                if (pictures.Length > 0)
+                                {
+                                    coverDataTemp = pictures[0].Data.Data;
+                                }
+                                var performers = tagFile.Tag.Performers;
+                                if (performers.Length > 0)
+                                {
+                                    artist = performers[0];
+                                }
+                                if (tagFile.Tag.Title != null)
+                                {
+                                    name = tagFile.Tag.Title;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            coverDataTemp = null;
+                        }
+
                         temp.Tracks.Add(new Track
                         {
                             Path = file,
-                            Title = filename,
-                            Artist = "Unknown"
+                            Title = name,
+                            Artist = artist,
+                            CoverData = coverDataTemp
                         });
                     }
                 }
@@ -223,6 +258,9 @@ public partial class PlayerPage : ContentPage
         //    await Task.Delay(50);
         //}
         //System.Diagnostics.Debug.WriteLine($"saermotest2 {mediaElement.Source}");
+        if (!File.Exists(track.Path){
+
+        }
         mediaElement.Stop();
         mediaElement.Source = null;
         AudioManager.Instance.CurrentTrack = track;
@@ -275,7 +313,7 @@ public partial class PlayerPage : ContentPage
 
             var addToPlaylist = new MenuFlyoutSubItem { Text = "Добавить в плейлист" };
             var permanentPlaylists = AudioManager.Instance.Playlists.Where(p => !p.IsTemporary).ToList();
-
+            FlyoutBase.SetContextFlyout(frame, null);
             if (permanentPlaylists.Count == 0)
             {
                 addToPlaylist.Add(new MenuFlyoutItem { Text = "Нет плейлистов", IsEnabled = false });
@@ -309,7 +347,43 @@ public partial class PlayerPage : ContentPage
                 };
                 menu.Add(deleteItem);
             }
+
             FlyoutBase.SetContextFlyout(frame,menu);
+        }
+    }
+    // Контекстное меню для изменения названия плейлиста
+    private void OnPlaylistFrameLoaded(object sender, EventArgs e)
+    {
+        if (sender is Frame frame && frame.BindingContext is Playlist playlist && !playlist.IsTemporary)
+        {
+            var menu = new MenuFlyout();
+
+            var changeName = new MenuFlyoutItem { Text = "Изменить название" };
+            changeName.Clicked += async (s, args) => await OnChangeNameClicked(playlist);
+
+            menu.Add(changeName);
+
+            FlyoutBase.SetContextFlyout(frame, menu);
+        }
+    }
+
+    private async Task OnChangeNameClicked(Playlist playlist)
+    {
+        // Запрос нового названия
+        string newName = await Application.Current.MainPage.DisplayPromptAsync(
+            "Изменение названия",
+            "Введите новое название плейлиста:",
+            initialValue: playlist.Name,
+            maxLength: 20,
+            keyboard: Keyboard.Text);
+
+        // Проверяем, что пользователь не нажал "Отмена" и ввел не пустое значение
+        if (!string.IsNullOrWhiteSpace(newName))
+        {
+            playlist.Name = newName;
+            var bc = BindingContext;
+            BindingContext = null;
+            BindingContext = bc;
         }
     }
 
@@ -415,4 +489,6 @@ public partial class PlayerPage : ContentPage
             }
         }
     }
+
+
 }

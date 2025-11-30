@@ -13,6 +13,6 @@ namespace AudioPlayer.Models
         public string Artist { get; set; }
 
         //реализовать чтение обложки или её генерацию по метаданным эээээээ типа
-        public string CoverPath { get; set; } = "swag.png";
+        public byte[]? CoverData { get; set; }
     }
 }

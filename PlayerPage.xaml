@@ -36,9 +36,13 @@
                 </VisualStateGroupList>
             </Setter>
         </Style>
+  
+        <services:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageConverter"/>
     </ContentPage.Resources>
 
-    <Grid>
+   
+
+        <Grid>
         <Grid x:Name="NormalLayout">
             <Grid RowDefinitions="*,Auto,Auto" ColumnDefinitions="3*,*,4*,*,3*" Padding="10">
 
@@ -46,25 +50,25 @@
                 <StackLayout Padding="10" BackgroundColor="#242323">
                     <Label Text="Плейлисты" TextColor="White" FontSize="24" HorizontalOptions="Center"/>
                     <Button Text="Создать плейлист"
-                        Clicked="OnCreatePlaylistClicked"
-                        BackgroundColor="White"
-                        TextColor="Black"
-                        CornerRadius="15"
-                        HeightRequest="50"
-                        Margin="30,20,30,0"/>
-                                <Button Text="Добавить еще песен"
-                        Clicked="OnAddMoreTracks"
-                        BackgroundColor="Black"
-                        TextColor="White"
-                        CornerRadius="15"
-                        HeightRequest="50"
-                        Margin="30,15,30,15"/>
+                            Clicked="OnCreatePlaylistClicked"
+                            BackgroundColor="White"
+                            TextColor="Black"
+                            CornerRadius="15"
+                            HeightRequest="50"
+                            Margin="30,20,30,0"/>
+                    <Button Text="Добавить еще песен"
+                            Clicked="OnAddMoreTracks"
+                            BackgroundColor="Black"
+                            TextColor="White"
+                            CornerRadius="15"
+                            HeightRequest="50"
+                            Margin="30,15,30,15"/>
 
                     <ScrollView VerticalOptions="FillAndExpand">
                         <VerticalStackLayout BindableLayout.ItemsSource="{Binding Playlists}">
                             <BindableLayout.ItemTemplate>
-                                <DataTemplate>
-                                    <VerticalStackLayout Spacing="5" Margin="0,5">
+                                <DataTemplate >
+                                    <VerticalStackLayout Spacing="5" Margin="0,5,25,0">
                                         <Grid ColumnDefinitions="Auto,Auto,*,Auto" Margin="0,5">
                                             
                                             <Button Grid.Column="0" ImageSource="collapse_icon.png"
@@ -74,13 +78,23 @@
                                              Clicked="OnTogglePlaylistClicked"/>
 
                                             <Button Grid.Column="1" ImageSource="button_play.png" WidthRequest="44" HeightRequest="44"
-                                                 BackgroundColor="Transparent" CommandParameter="{Binding .}"
-                                                 Clicked="OnPlaylistPlayClicked" Margin="-15,0,0,0"/>   
-                                      
-                                            <Label Grid.Column="2" Text="{Binding Name}" TextColor="White" VerticalOptions="Center"/>
-                                                                                      
+                                                    BackgroundColor="Transparent" CommandParameter="{Binding .}"
+                                                    Clicked="OnPlaylistPlayClicked" Margin="-15,0,0,0"/>
+
+                                            <Frame Grid.Column="2"
+                                                   BackgroundColor="Transparent"
+                                                   BorderColor="Transparent"
+                                                   Padding="5"
+                                                   HasShadow="False"
+                                                   BindingContextChanged="OnPlaylistFrameLoaded">
+                                                
+                                                <Label  Text="{Binding Name}" TextColor="White" VerticalOptions="Center"/>
+                                            </Frame>
+                                            
+
                                             <Label Grid.Column="3" Text="{Binding Tracks.Count, StringFormat='{0} треков'}"
-                               TextColor="#A8A8A8" VerticalOptions="Center"/>
+                                                   TextColor="#A8A8A8" VerticalOptions="Center"
+                                                   />
                                         </Grid>
 
                                         <!-- Список треков -->
@@ -120,7 +134,7 @@
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="15" />
                         </Border.StrokeShape>
-                        <Image Source="swag.png" Aspect="AspectFit" />
+                        <Image Source="{Binding CurrentTrack.CoverData, Converter={StaticResource ByteArrayToImageConverter},FallbackValue='swag.png'}}" Aspect="AspectFit" />
                     </Border>
 
 
@@ -169,7 +183,7 @@
                                 <Border.StrokeShape>
                                     <RoundRectangle CornerRadius="5" />
                                 </Border.StrokeShape>
-                                <Image Source="swag.png" Aspect="AspectFit" />
+                                <Image Source="{Binding CurrentTrack.CoverData, Converter={StaticResource ByteArrayToImageConverter}, FallbackValue='swag.png'}" Aspect="AspectFit" />
                             </Border>
                             <StackLayout VerticalOptions="Center">
                                 <Label Text="{Binding CurrentTrack.Title, FallbackValue='Название'}" TextColor="White" FontSize="16" 
