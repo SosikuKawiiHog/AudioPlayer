@@ -5,6 +5,7 @@ using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -260,7 +261,30 @@ public partial class PlayerPage : ContentPage
         //    await Task.Delay(50);
         //}
         //System.Diagnostics.Debug.WriteLine($"saermotest2 {mediaElement.Source}");
-        
+
+        if (!File.Exists(track.Path))
+        {
+            Track? next = null;
+            var queue = AudioManager.Instance.Queue;
+            var currentIndex = AudioManager.Instance.Queue.IndexOf(track);
+
+            if (currentIndex + 1 < queue.Count)
+            {
+                next = queue[currentIndex + 1];
+            }
+            else
+            {
+                next = queue.Count > 0 ? queue[0] : null;
+            }
+            if (next != null)
+            {
+                PlayTrack(next);
+            }
+            System.Diagnostics.Debug.WriteLine("SAERMO");
+            
+            return;
+        }
+
         mediaElement.Stop();
         mediaElement.Source = null;
         AudioManager.Instance.CurrentTrack = track;
