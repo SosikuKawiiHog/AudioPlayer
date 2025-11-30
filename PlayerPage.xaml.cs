@@ -10,10 +10,12 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using TagLib;
+using TagLib.Matroska;
 using Windows.Devices.Radios;
 using static System.Net.Mime.MediaTypeNames;
 using Application = Microsoft.Maui.Controls.Application;
 using File = System.IO.File;
+using Track = AudioPlayer.Models.Track;
 namespace AudioPlayer;
 
 public partial class PlayerPage : ContentPage
@@ -358,17 +360,19 @@ public partial class PlayerPage : ContentPage
             var menu = new MenuFlyout();
 
             var changeName = new MenuFlyoutItem { Text = "Изменить название" };
+            var deletePlaylist = new MenuFlyoutItem { Text = "Удалить плейлист" };
+
             changeName.Clicked += async (s, args) => await OnChangeNameClicked(playlist);
-
+            deletePlaylist.Clicked += async (s, args) => await OnDeletePlaylistClicked(playlist);
             menu.Add(changeName);
-
+            menu.Add(deletePlaylist);
             FlyoutBase.SetContextFlyout(frame, menu);
         }
     }
 
     private async Task OnChangeNameClicked(Playlist playlist)
     {
-        // Запрос нового названия
+        // Окно с изменением названия
         string newName = await Application.Current.MainPage.DisplayPromptAsync(
             "Изменение названия",
             "Введите новое название плейлиста:",
@@ -384,6 +388,11 @@ public partial class PlayerPage : ContentPage
             BindingContext = null;
             BindingContext = bc;
         }
+    }
+
+    private async Task OnDeletePlaylistClicked(Playlist playlist)
+    {
+        AudioManager.Instance.Playlists.Remove(playlist);
     }
 
     private void OnRepeatClicked(object sender, EventArgs e)
