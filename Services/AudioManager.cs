@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Formats.Tar;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -145,6 +146,7 @@ namespace AudioPlayer.Services
                 {
                     playlist.Tracks.CollectionChanged += OnTracksCollectionChanged;
                 }
+                
             }
         }
 
@@ -203,6 +205,21 @@ namespace AudioPlayer.Services
             _dataService = new FileDataService();
             Playlists.CollectionChanged += OnPlaylistsChanged;
             LoadPlaylistsOnStartup();
+
+            foreach (var playlist in Playlists)
+            {
+                foreach (var track in playlist.Tracks)
+                {
+                    var tagFile = TagLib.File.Create(track.Path);
+                    byte[]? coverDataTemp = null;
+                    var pictures = tagFile.Tag.Pictures;
+                    if (pictures.Length > 0)
+                    {
+                        coverDataTemp = pictures[0].Data.Data;
+                    }
+                    track.CoverData = coverDataTemp;
+                }
+            }
         }
         public void LoadTracksFromPaths(IEnumerable<string> paths)
         {
