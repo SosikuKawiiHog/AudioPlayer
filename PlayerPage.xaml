@@ -141,24 +141,26 @@
                 </Grid>
 
                 <!-- Queue -->
-                
+
                 <StackLayout Grid.Row="0" Grid.Column="4" BackgroundColor="#242323" Padding="10">
                     <Label Text="Очередь" TextColor="White" FontSize="24" Margin="0,0,0,10" HorizontalOptions="Center"/>
-                    <CollectionView ItemsSource="{Binding Queue}" Background="Transparent">
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Frame BackgroundColor="#2F2F2F" CornerRadius="10" Padding="5" Margin="5">
-                                    <HorizontalStackLayout Spacing="10">
-                                        <Button ImageSource="button_play.png"
+                    <ScrollView VerticalOptions="FillAndExpand">
+                        <CollectionView ItemsSource="{Binding Queue}" Background="Transparent">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame BackgroundColor="#2F2F2F" CornerRadius="10" Padding="5" Margin="5">
+                                        <HorizontalStackLayout Spacing="10">
+                                            <Button ImageSource="button_play.png"
                                                 WidthRequest="40" BackgroundColor="Transparent"
                                                 CommandParameter="{Binding .}"
                                                 Clicked="OnQueueTrackPlayClicked"/>
-                                        <Label Text="{Binding Title}" TextColor="White" FontSize="14" VerticalOptions="Center"></Label>
-                                    </HorizontalStackLayout>
-                                </Frame>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
+                                            <Label Text="{Binding Title}" TextColor="White" FontSize="14" VerticalOptions="Center"></Label>
+                                        </HorizontalStackLayout>
+                                    </Frame>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </ScrollView>
                 </StackLayout>
 
                 <Slider x:Name="positionSlider" Value="{Binding Source={x:Reference mediaElement}, Path=Position.TotalSeconds, Mode=TwoWay}"
@@ -202,7 +204,7 @@
                             <Button ImageSource="repeat.png" WidthRequest="53" BackgroundColor="Transparent" Margin="5,0,0,0" Clicked="OnRepeatClicked"/>
                         </HorizontalStackLayout>
 
-                        <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Center" Spacing="10">
+                        <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Center" Spacing="10" Margin="0,0,15,0">
                             <Image Source="volume_icon.png" WidthRequest="30"  BackgroundColor="Transparent"/>
                             <Slider x:Name="volumeSlider" Value="{Binding Source={x:Reference mediaElement}, Path=Volume, Mode=TwoWay}" WidthRequest="80" VerticalOptions="Center" MinimumWidthRequest="80"/>
                         </HorizontalStackLayout>
