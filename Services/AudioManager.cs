@@ -64,7 +64,7 @@ namespace AudioPlayer.Services
                 }
 
                 var json = await File.ReadAllTextAsync(_filePath);
-                System.Diagnostics.Debug.WriteLine($"SAERM: {json}");
+                System.Diagnostics.Debug.WriteLine($"SAERMO: {json}");
 
                 var options = new JsonSerializerOptions
                 {

@@ -280,7 +280,8 @@ public partial class PlayerPage : ContentPage
             {
                 PlayTrack(next);
             }
-            System.Diagnostics.Debug.WriteLine("SAERMO");
+            
+            //System.Diagnostics.Debug.WriteLine("SAERMO");
             
             return;
         }
