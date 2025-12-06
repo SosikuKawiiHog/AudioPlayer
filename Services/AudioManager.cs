@@ -1,4 +1,5 @@
 ﻿using AudioPlayer.Models;
+using Microsoft.Maui.Storage;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -75,17 +76,18 @@ namespace AudioPlayer.Services
 
                 var playlists = JsonSerializer.Deserialize<List<Playlist>>(json, options) ?? new List<Playlist>();
 
-                System.Diagnostics.Debug.WriteLine($"SAERMO загружено: {playlists.Count}");
+                //System.Diagnostics.Debug.WriteLine($"SAERMO загружено: {playlists.Count}");
 
                 // Восстанавливаем ObservableCollection для каждого плейлиста
                 foreach (var playlist in playlists)
                 {
-                    System.Diagnostics.Debug.WriteLine($"SAERMO Плейлист: '{playlist.Name}', Треков: {playlist.Tracks?.Count ?? 0}, IsTemporary: {playlist.IsTemporary}");
+                    //System.Diagnostics.Debug.WriteLine($"SAERMO Плейлист: '{playlist.Name}', Треков: {playlist.Tracks?.Count ?? 0}, IsTemporary: {playlist.IsTemporary}");
 
                     // Убеждаемся, что коллекция инициализирована
-                    playlist.Tracks ??= new ObservableCollection<Track>();
+                    playlist.Tracks ??= new ObservableCollection<Track>(); 
 
-                    // Восстанавливаем состояние IsExpanded (по умолчанию true)
+                    
+
                     playlist.IsExpanded = false;
                 }
 
@@ -96,6 +98,11 @@ namespace AudioPlayer.Services
                 System.Diagnostics.Debug.WriteLine($"Ошибка загрузки: {ex.Message}");
                 return new List<Playlist>();
             }
+        }
+
+        private void InitTrackWithMetadata(Track track)
+        {
+
         }
     }
     public class AudioManager : INotifyPropertyChanged
@@ -206,19 +213,51 @@ namespace AudioPlayer.Services
             Playlists.CollectionChanged += OnPlaylistsChanged;
             LoadPlaylistsOnStartup();
 
-            foreach (var playlist in Playlists)
+            foreach (var tplaylist in Playlists)
             {
+                var playlist = tplaylist;
                 foreach (var track in playlist.Tracks)
                 {
-                    var tagFile = TagLib.File.Create(track.Path);
+                    var path = track.Path;
                     byte[]? coverDataTemp = null;
-                    var pictures = tagFile.Tag.Pictures;
-                    if (pictures.Length > 0)
+                    string name = track.Path;
+                    string artist = "Unknown";
+                    try
                     {
-                        coverDataTemp = pictures[0].Data.Data;
+                        using (var tagFile = TagLib.File.Create(path))
+                        {
+                            var pictures = tagFile.Tag.Pictures;
+                            if (pictures.Length > 0)
+                            {
+                                coverDataTemp = pictures[0].Data.Data;
+                            }
+                            var performers = tagFile.Tag.Performers;
+                            if (performers.Length > 0)
+                            {
+                                artist = performers[0];
+                            }
+                            if (tagFile.Tag.Title != null)
+                            {
+                                name = tagFile.Tag.Title;
+                            }
+                            
+                        }
                     }
-                    track.CoverData = coverDataTemp;
+                    catch (Exception ex)
+                    {
+                        coverDataTemp = null;
+                    }
+                    //var tagFile = TagLib.File.Create(track.Path);
+                    //byte[]? coverDataTemp = null;
+                    //var pictures = tagFile.Tag.Pictures;
+                    //if (pictures.Length > 0)
+                    //{
+                    //    coverDataTemp = pictures[0].Data.Data;
+                    //}
+                    //track.CoverData = coverDataTemp;
                 }
+                tplaylist.Tracks.Clear();
+                tplaylist.Tracks = playlist.Tracks;
             }
         }
         public void LoadTracksFromPaths(IEnumerable<string> paths)
