@@ -12,10 +12,11 @@ namespace AudioPlayer.Models
     public class Track
     {
         public string Path { get; set; }
+        [JsonIgnore]
         public string Title { get; set; }
+        [JsonIgnore]
         public string Artist { get; set; }
-
+        [JsonIgnore]
         public byte[]? CoverData { get; set; }
-
     }
 }

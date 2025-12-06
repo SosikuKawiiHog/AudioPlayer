@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using TagLib;
+
 using File = System.IO.File;
 
 //misha SINGLETOOOON
@@ -84,11 +85,56 @@ namespace AudioPlayer.Services
                     //System.Diagnostics.Debug.WriteLine($"SAERMO Плейлист: '{playlist.Name}', Треков: {playlist.Tracks?.Count ?? 0}, IsTemporary: {playlist.IsTemporary}");
 
                     // Убеждаемся, что коллекция инициализирована
-                    playlist.Tracks ??= new ObservableCollection<Track>(); 
+                    playlist.Tracks ??= new ObservableCollection<Track>();
 
-                    
 
-                    playlist.IsExpanded = false;
+                    var tracksToProcess = playlist.Tracks.ToList();
+
+                    // Очищаем оригинальную коллекцию
+                    playlist.Tracks.Clear();
+
+                    foreach (var track in tracksToProcess)
+                    {
+                        var path = track.Path;
+                        byte[]? coverDataTemp = null;
+                        string name = track.Path;
+                        string artist = "Unknown";
+
+                        try
+                        {
+                            using (var tagFile = TagLib.File.Create(path))
+                            {
+                                var pictures = tagFile.Tag.Pictures;
+                                if (pictures.Length > 0)
+                                {
+                                    coverDataTemp = pictures[0].Data.Data;
+                                }
+                                var performers = tagFile.Tag.Performers;
+                                if (performers.Length > 0)
+                                {
+                                    artist = performers[0];
+                                }
+                                if (tagFile.Tag.Title != null)
+                                {
+                                    name = tagFile.Tag.Title;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine(ex);
+                        }
+
+                        // Добавляем обновленный трек
+                        playlist.Tracks.Add(new Track
+                        {
+                            Path = path,
+                            Title = name,
+                            Artist = artist,
+                            CoverData = coverDataTemp
+                        });
+                    }
+
                 }
 
                 return playlists;
@@ -143,6 +189,7 @@ namespace AudioPlayer.Services
             var savedPlaylists = await _dataService.LoadPlaylistsAsync();
 
             
+
             foreach (var playlist in savedPlaylists)
             {
                 Playlists.Add(playlist);
@@ -155,6 +202,8 @@ namespace AudioPlayer.Services
                 }
                 
             }
+
+            
         }
 
         private async void OnPlaylistsChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -213,52 +262,8 @@ namespace AudioPlayer.Services
             Playlists.CollectionChanged += OnPlaylistsChanged;
             LoadPlaylistsOnStartup();
 
-            foreach (var tplaylist in Playlists)
-            {
-                var playlist = tplaylist;
-                foreach (var track in playlist.Tracks)
-                {
-                    var path = track.Path;
-                    byte[]? coverDataTemp = null;
-                    string name = track.Path;
-                    string artist = "Unknown";
-                    try
-                    {
-                        using (var tagFile = TagLib.File.Create(path))
-                        {
-                            var pictures = tagFile.Tag.Pictures;
-                            if (pictures.Length > 0)
-                            {
-                                coverDataTemp = pictures[0].Data.Data;
-                            }
-                            var performers = tagFile.Tag.Performers;
-                            if (performers.Length > 0)
-                            {
-                                artist = performers[0];
-                            }
-                            if (tagFile.Tag.Title != null)
-                            {
-                                name = tagFile.Tag.Title;
-                            }
-                            
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        coverDataTemp = null;
-                    }
-                    //var tagFile = TagLib.File.Create(track.Path);
-                    //byte[]? coverDataTemp = null;
-                    //var pictures = tagFile.Tag.Pictures;
-                    //if (pictures.Length > 0)
-                    //{
-                    //    coverDataTemp = pictures[0].Data.Data;
-                    //}
-                    //track.CoverData = coverDataTemp;
-                }
-                tplaylist.Tracks.Clear();
-                tplaylist.Tracks = playlist.Tracks;
-            }
+            
+
         }
         public void LoadTracksFromPaths(IEnumerable<string> paths)
         {
