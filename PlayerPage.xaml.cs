@@ -146,7 +146,7 @@ public partial class PlayerPage : ContentPage
                         }
                         catch (Exception ex)
                         {
-                            coverDataTemp = null;
+                            System.Diagnostics.Debug.WriteLine(ex);
                         }
 
                         temp.Tracks.Add(new Track
@@ -261,7 +261,10 @@ public partial class PlayerPage : ContentPage
         //    await Task.Delay(50);
         //}
         //System.Diagnostics.Debug.WriteLine($"saermotest2 {mediaElement.Source}");
-
+        if (AudioManager.Instance.Queue.Count < 1)
+        {
+            return;
+        }
         if (!File.Exists(track.Path))
         {
             Track? next = null;
@@ -377,7 +380,7 @@ public partial class PlayerPage : ContentPage
             FlyoutBase.SetContextFlyout(frame,menu);
         }
     }
-    // Контекстное меню для изменения названия плейлиста
+    // Контекстное меню для изменения названия плейлиста или его удаления
     private void OnPlaylistFrameLoaded(object sender, EventArgs e)
     {
         if (sender is Frame frame && frame.BindingContext is Playlist playlist && !playlist.IsTemporary)
@@ -416,7 +419,7 @@ public partial class PlayerPage : ContentPage
     }
 
     private async Task OnDeletePlaylistClicked(Playlist playlist)
-    {
+    {   
         AudioManager.Instance.Playlists.Remove(playlist);
     }
 

@@ -134,7 +134,10 @@
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="15" />
                         </Border.StrokeShape>
-                        <Image Source="{Binding CurrentTrack.CoverData, Converter={StaticResource ByteArrayToImageConverter},FallbackValue='swag.png'}}" Aspect="AspectFit" />
+                        <Image Source="{Binding CurrentTrack.CoverData, 
+                                        Converter={StaticResource ByteArrayToImageConverter},
+                                        FallbackValue='swag.png'}}" 
+                               Aspect="AspectFit" />
                     </Border>
 
 

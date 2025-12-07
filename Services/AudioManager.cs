@@ -146,10 +146,7 @@ namespace AudioPlayer.Services
             }
         }
 
-        private void InitTrackWithMetadata(Track track)
-        {
 
-        }
     }
     public class AudioManager : INotifyPropertyChanged
     {
@@ -261,8 +258,6 @@ namespace AudioPlayer.Services
             _dataService = new FileDataService();
             Playlists.CollectionChanged += OnPlaylistsChanged;
             LoadPlaylistsOnStartup();
-
-            
 
         }
         public void LoadTracksFromPaths(IEnumerable<string> paths)
